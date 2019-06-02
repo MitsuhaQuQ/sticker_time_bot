@@ -1,5 +1,6 @@
 # Ziben Yunzuo 10:40 Timer bot (Testing)
 Telegram Link: [http://t.me/ziben_yunzuo_bot](http://t.me/ziben_yunzuo_bot)
+Audio file removed due to copyrights
 
 ## Introduction
 This is a [Telegram](https://telegram.org/) bot sending a sticker when it is 10:40 or 22:40.

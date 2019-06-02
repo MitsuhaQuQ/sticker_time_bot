@@ -21,21 +21,12 @@ const logger = createLogger({
 const token = config.tg_bot_token;
 
 const stickers = [
-    'CAADBQAD8wADDxXNGeYW5EDuT_6aAg',
-    'CAADBQAD9AADDxXNGcJK3qzks8qLAg',
-    'CAADBQAD9QADDxXNGZ6Uniz2IyF3Ag',
-    'CAADBQAD9gADDxXNGRLp93L7_gSLAg',
-    'CAADBQAD9wADDxXNGRU9qwR8J2NjAg',
-    'CAADBQAD-AADDxXNGYQQoarLCyyeAg',
-    'CAADBQAD-QADDxXNGe5M6q3FOIs_Ag',
-    'CAADBQAD-gADDxXNGYlJ7FZM6M4rAg',
-    'CAADBQAD-wADDxXNGe8aqxEu9OCLAg',
-    'CAADBQAD_AADDxXNGSb44I6FN-UzAg',
-    'CAADBQAD_QADDxXNGYGYV17DXBbkAg',
-    'CAADBQAD_gADDxXNGWuj_Z6psGN4Ag'
+    'CAADBQADAQAD9tu2MpYEjqu_M79iAg'
 ];
 
 const bot = new TelegramBot(token, { polling: true });
+
+
 
 if (fs.existsSync('./data.json')) {
     var fdata = fs.readFileSync('./data.json', 'utf8');
@@ -45,7 +36,7 @@ if (fs.existsSync('./data.json')) {
 
 function saveData() {
     json = JSON.stringify(data);
-    fs.writeFile('./data.json', json, 'utf8');
+    fs.writeFile("./data.json", json , 'utf8',  function(err, written, buffer) {});
 }
 
 if (typeof data == 'undefined' || data == null) {
@@ -74,19 +65,7 @@ if (typeof data.lastid == 'undefined' || data.lastid == null) {
     saveData();
 }
 
-if (typeof data.sleeptime == 'undefined' || data.sleeptime == null) {
-    data.sleeptime = {};
-    saveData();
-}
 
-if (typeof data.waketime == 'undefined' || data.waketime == null) {
-    data.waketime = {};
-    saveData();
-}
-if (typeof data.autodelete == 'undefined' || data.autodelete == null) {
-    data.autodelete = {};
-    saveData();
-}
 
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
@@ -123,78 +102,6 @@ bot.onText(/^\/timezone(@sticker_time_bot)?(\s+([^\s]+))?$/, (msg, match) => {
     }
 });
 
-bot.onText(/^\/autodelete(@sticker_time_bot)?(\s+([^\s]+))?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    let index = data.chatids.indexOf(chatId);
-    if (index <= -1) {
-        bot.sendMessage(chatId, 'Not started, chat ID: ' + chatId);
-        return;
-    }
-    if (match[3]) {
-        if (match[3] === 'on') {
-            bot.sendMessage(chatId, 'Enable auto deleting');
-            data.autodelete[chatId] = true;
-            saveData();
-            logger.info(chatId + ' set autodelete: on');
-        } else if (match[3] === 'off') {
-            bot.sendMessage(chatId, 'Disable auto deleting');
-            data.autodelete[chatId] = false;
-            saveData();
-            logger.info(chatId + ' set autodelete: off');
-        } else {
-            bot.sendMessage(chatId, 'Unknown command');
-        }
-    } else {
-        if (chatId in data.autodelete) {
-            bot.sendMessage(chatId, 'Auto deleting status: ' + (data.autodelete[chatId] ? 'on' : 'off'));
-        } else {
-            bot.sendMessage(chatId, 'Auto deleting not set, by default off.');
-        }
-    }
-});
-
-bot.onText(/^\/sleeptime(@sticker_time_bot)?(\s+([^\s]+))?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    // bot.sendMessage(chatId, match[0]+'  '+match[1]+'  '+match[2]+'  '+match[3])
-    if (match[3]) {
-        var num = parseInt(match[3], 10);
-        if (num <= 23 && num >= 0){
-            logger.info(chatId + ' set sleeptime to '+ num +':00');
-            bot.sendMessage(chatId, 'Set sleeptime to '+ num +':00');
-            data.sleeptime[chatId] = num;
-            saveData();
-        } else {
-            bot.sendMessage(chatId, match[3]+' is a invalid time, 0-23 expected');
-        }
-    } else {
-        if (chatId in data.sleeptime) {
-            bot.sendMessage(chatId, "Current sleep time: " + data.sleeptime[chatId]);
-        } else {
-            bot.sendMessage(chatId, "Sleep time not set");
-        }
-    }
-});
-
-bot.onText(/^\/waketime(@sticker_time_bot)?(\s+([^\s]+))?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    if (match[3]) {
-        var num = parseInt(match[3], 10);
-        if (num <= 23 && num >= 0){
-            logger.info(chatId + ' set waketime to '+ num +':00');
-            bot.sendMessage(chatId, 'Set waketime to '+ num +':00');
-            data.waketime[chatId] = num;
-            saveData();
-        } else {
-            bot.sendMessage(chatId, match[3]+' is a invalid time, 0-23 expected');
-        }
-    } else {
-        if (chatId in data.waketime) {
-            bot.sendMessage(chatId, "Current wake time: " + data.waketime[chatId]);
-        } else {
-            bot.sendMessage(chatId, "Wake time not set");
-        }
-    }
-});
 
 
 bot.onText(/\/stop/, (msg) => {
@@ -225,7 +132,7 @@ bot.on('webhook_error', (error) => {
     logger.error('[webhook_error] ' + error.code);  // => 'EPARSE'
 });
 
-var cron = new CronJob('0 * * * *', function() {
+var cron = new CronJob('40 10,22 * * *', function() {
     var date = new Date();
     logger.info('Cron triggered: ' + date + ', send sticker to ' + data.chatids.length + ' chats');
     data.chatids.forEach(function (id) {
@@ -233,20 +140,9 @@ var cron = new CronJob('0 * * * *', function() {
         if (!tz) {
             tz = 'Asia/Shanghai';
         }
-        let hour = moment().tz(tz).hours();
 
-        if (id in data.sleeptime && id in data.waketime) {
-            let sleep = data.sleeptime[id];
-            let wake = data.waketime[id];
-            if (sleep < wake) {
-                if (hour > sleep && hour < wake) return;
-            }
-            if (sleep > wake) {
-                if (hour > sleep || hour < wake) return;
-            }
-        }
         logger.debug('Send to ' + id);
-        bot.sendSticker(id, stickers[hour % 12]).then(message => {
+        bot.sendSticker(id, stickers[1]).then(message => {
             let cid = message.chat.id;
             let mid = message.message_id;
             if (data.autodelete[cid] && data.lastid[cid]) {

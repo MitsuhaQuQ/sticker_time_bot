@@ -20,12 +20,9 @@ const logger = createLogger({
 
 const token = config.tg_bot_token;
 
-const stickers = [
-    'CAADBQADAQAD9tu2MpYEjqu_M79iAg'
-];
+const sticker1040 = 'CAADBQADAQAD9tu2MpYEjqu_M70iAg' ;
 
 const bot = new TelegramBot(token, { polling: true });
-
 
 
 if (fs.existsSync('./data.json')) {
@@ -68,7 +65,7 @@ if (typeof data.lastid == 'undefined' || data.lastid == null) {
 
 
 bot.onText(/\/start/, (msg) => {
-    const chatId = msg.chat.id;
+	const chatId = msg.chat.id;
     let index = data.chatids.indexOf(chatId);
     if (index > -1) {
         bot.sendMessage(chatId, 'Already started, chat ID: ' + chatId);
@@ -82,7 +79,7 @@ bot.onText(/\/start/, (msg) => {
 });
 
 bot.onText(/^\/timezone(@sticker_time_bot)?(\s+([^\s]+))?$/, (msg, match) => {
-    const chatId = msg.chat.id;
+	const chatId = msg.chat.id;
     if (match[3]) {
         if (moment.tz.zone(match[3])) {
             logger.info(chatId + ' set timezone to ' + match[3]);
@@ -105,7 +102,7 @@ bot.onText(/^\/timezone(@sticker_time_bot)?(\s+([^\s]+))?$/, (msg, match) => {
 
 
 bot.onText(/\/stop/, (msg) => {
-    const chatId = msg.chat.id;
+	const chatId = msg.chat.id;
     let index = data.chatids.indexOf(chatId);
     if (index > -1) {
         data.chatids.splice(index, 1);
@@ -117,6 +114,17 @@ bot.onText(/\/stop/, (msg) => {
     }
     logger.info(chatId + ' stopped');
     bot.sendMessage(chatId, 'Stopped, chat ID: ' + chatId);
+});
+
+bot.onText(/\/ping/, (msg) => {
+	const chatId = msg.chat.id;
+	bot.sendMessage(chatId, 'Arrrrr.');
+});
+
+bot.onText(/\/trainnow/, (msg) => {
+	const chatId = msg.chat.id;
+	bot.sendMessage(chatId, 'The controller says "WE NEED A TRAIN!".');
+	bot.sendSticker(chatId, sticker1040 );
 });
 
 // bot.on('sticker', (msg) => {
@@ -132,6 +140,21 @@ bot.on('webhook_error', (error) => {
     logger.error('[webhook_error] ' + error.code);  // => 'EPARSE'
 });
 
+var cron = new CronJob('38 10,22 * * *', function() {
+	var date = new Date();
+    data.chatids.forEach(function (id) {
+        let tz = data.tzmap[id];
+        if (!tz) {
+            tz = 'Asia/Shanghai';
+        }
+		
+		logger.debug('Send prepar ' + id);
+		bot.sendMessage(id, 'Attention please. The train number G1040 is now arriving at platform 9.');
+		bot.sendMessage(id, 'Please hold your ticket.');
+	});
+}, null, true, 'Asia/Shanghai');
+
+// when 10:40 or 22:40 send a sticker
 var cron = new CronJob('40 10,22 * * *', function() {
     var date = new Date();
     logger.info('Cron triggered: ' + date + ', send sticker to ' + data.chatids.length + ' chats');
@@ -142,7 +165,7 @@ var cron = new CronJob('40 10,22 * * *', function() {
         }
 
         logger.debug('Send to ' + id);
-        bot.sendSticker(id, stickers[1]).then(message => {
+        bot.sendSticker(id, sticker1040 ).then(message => {
             let cid = message.chat.id;
             let mid = message.message_id;
             if (data.autodelete[cid] && data.lastid[cid]) {
@@ -186,4 +209,17 @@ var cron = new CronJob('40 10,22 * * *', function() {
             }
         })
     });
+}, null, true, 'Asia/Shanghai');
+
+var cron = new CronJob('41 10,22 * * *', function() {
+	var date = new Date();
+    data.chatids.forEach(function (id) {
+        let tz = data.tzmap[id];
+        if (!tz) {
+            tz = 'Asia/Shanghai';
+        }
+		
+		logger.debug('Send end ' + id);
+		bot.sendMessage(id, 'Doooooors are closing.....');
+	});
 }, null, true, 'Asia/Shanghai');

@@ -1,8 +1,8 @@
-# Sticker Time Bot
+# Ziben Yunzuo 10:40 Timer bot
 Telegram Link: [http://t.me/ziben_yunzuo_bot](http://t.me/ziben_yunzuo_bot)
 
 ## Introduction
-This is a [Telegram](https://telegram.org/) bot sending a sticker telling time every hour. You can start or stop any time using commands.
+This is a [Telegram](https://telegram.org/) bot sending a sticker when it is 10:40 or 22:40.
 
 ## Commands
 **Start sending stickers:** `/start`

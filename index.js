@@ -68,38 +68,17 @@ bot.onText(/\/start/, (msg) => {
 	const chatId = msg.chat.id;
     let index = data.chatids.indexOf(chatId);
     if (index > -1) {
-        bot.sendMessage(chatId, 'Already started, chat ID: ' + chatId);
+        bot.sendMessage(chatId, '前方区间已经有列车！');
+		bot.sendVoice(chatId, 'ATS.ogg');
         return;
     }
     data.chatids.push(chatId);
     delete data.lastid[chatId];
     saveData();
     logger.info(chatId + ' started');
-    bot.sendMessage(chatId, 'Started, chat ID: ' + chatId);
+    bot.sendMessage(chatId, '已启动，你的ID为：' + chatId);
+	bot.sendVoice(chatId, 'ATC_Ding.ogg');
 });
-
-bot.onText(/^\/timezone(@sticker_time_bot)?(\s+([^\s]+))?$/, (msg, match) => {
-	const chatId = msg.chat.id;
-    if (match[3]) {
-        if (moment.tz.zone(match[3])) {
-            logger.info(chatId + ' set timezone to ' + match[3]);
-            bot.sendMessage(chatId, 'Set timezone to ' + match[3]);
-            data.tzmap[chatId] = match[3];
-            saveData();
-        } else {
-            bot.sendMessage(chatId, 'Invalid timezone: ' + match[3]);
-        }
-    } else {
-        let tz = data.tzmap[chatId];
-        if (tz) {
-            bot.sendMessage(chatId, 'Current timezone: ' + data.tzmap[chatId]);
-        } else {
-            bot.sendMessage(chatId, 'Timezone not set, by default Asia/Shanghai.');
-        }
-    }
-});
-
-
 
 bot.onText(/\/stop/, (msg) => {
 	const chatId = msg.chat.id;
@@ -109,21 +88,23 @@ bot.onText(/\/stop/, (msg) => {
         delete data.lastid[chatId];
         saveData();
     } else {
-        bot.sendMessage(chatId, 'Not started, chat ID: ' + chatId);
+        bot.sendMessage(chatId, '未启动，您的ID为：' + chatId);
         return;
     }
     logger.info(chatId + ' stopped');
-    bot.sendMessage(chatId, 'Stopped, chat ID: ' + chatId);
+    bot.sendMessage(chatId, '已停止，您的ID为：' + chatId);
+	bot.sendVoice(chatId, 'ATC_Ding.ogg');
 });
 
 bot.onText(/\/ping/, (msg) => {
 	const chatId = msg.chat.id;
-	bot.sendMessage(chatId, 'Arrrrr.');
+	bot.sendVoice(chatId, 'ATC_Ding.ogg');
 });
 
 bot.onText(/\/trainnow/, (msg) => {
 	const chatId = msg.chat.id;
-	bot.sendMessage(chatId, 'The controller says "WE NEED A TRAIN!".');
+	bot.sendMessage(chatId, '加开列车！');
+	bot.sendVoice(chatId, 'ATC_Ding.ogg');
 	bot.sendSticker(chatId, sticker1040 );
 });
 
@@ -149,8 +130,9 @@ var cron = new CronJob('38 10,22 * * *', function() {
         }
 		
 		logger.debug('Send prepar ' + id);
-		bot.sendMessage(id, 'Attention please. The train number G1040 is now arriving at platform 9.');
-		bot.sendMessage(id, 'Please hold your ticket.');
+		bot.sendVoice(chatId, 'ATOS.ogg');
+		bot.sendMessage(id, '旅客们请注意，开往 北部湾 方向的 高1040次列车即将到达本站');
+		bot.sendMessage(id, '列车到达 9 站台');
 	});
 }, null, true, 'Asia/Shanghai');
 
@@ -220,6 +202,7 @@ var cron = new CronJob('41 10,22 * * *', function() {
         }
 		
 		logger.debug('Send end ' + id);
-		bot.sendMessage(id, 'Doooooors are closing.....');
+		bot.sendMessage(id, '列车关门，请乘客们注意安全');
+		bot.sendVoice(chatId, 'departure.ogg');
 	});
 }, null, true, 'Asia/Shanghai');

@@ -9,7 +9,7 @@ This is a [Telegram](https://telegram.org/) bot sending a sticker when it is 10:
 
 **Stop sending stickers:** `/stop`
 
-**Removed time zone set due to using enviroment** `Null`
+**Removed time zone set due to using enviroment** 
 
 **Test the bor answer：** `/ping`
 

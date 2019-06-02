@@ -9,7 +9,11 @@ This is a [Telegram](https://telegram.org/) bot sending a sticker when it is 10:
 
 **Stop sending stickers:** `/stop`
 
-**Set timezone:** `/timezone Asia/Shanghai`
+**Removed time zone set due to using enviroment** `Null`
+
+**Test the bor answer：** `/ping`
+
+**Start a train manually:** `/trainnow`
 
 *List of timezones in tz database: [https://en.wikipedia.org/wiki/List_of_tz_database_time_zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)*
 

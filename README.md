@@ -34,6 +34,8 @@ Create a file config.json:
     "log_file": "Log file"
 }
 ```
+## Audio Support
+Place Opus OGG file in the directory and modify the index
 
 ## Start
 ```sh

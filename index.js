@@ -131,17 +131,6 @@ var cronJob = require("cron").CronJob;
 
 //test zone
 
-new cronJob('0 * * * * *', function(){
-	data.chatids.forEach(function (id){
-	logger.debug('Send to ' + id);
-    bot.sendSticker(id, sticker698 );
-	bot.sendSticker(id, sticker1040 );
-	});
-}, null, true, 'Asia/Shanghai');
-
-
-
-
 //end of test zone
 
 
@@ -151,7 +140,7 @@ new cronJob('0 8 6,18 * * *', function(){
 	logger.debug('Send prepar ' + id);
 	bot.sendVoice(id, 'ATOS.ogg');
 	bot.sendMessage(id, '旅客们请注意，开往 北部湾 方向的 D698次列车即将到达本站');
-	bot.sendMessage(id, '列车到达 9 站台');
+	bot.sendMessage(id, '列车到达 2 站台');
 	});
 }, null, true, 'Asia/Shanghai');
 
@@ -166,7 +155,7 @@ new cronJob('0 10 6,18 * * *', function(){
 	data.chatids.forEach(function (id){
 	logger.debug('Send end ' + id);
 	bot.sendMessage(id, '列车关门，请乘客们注意安全');
-	bot.sendVoice(id, 'departure.ogg');
+	bot.sendVoice(id, 'departure02.ogg');
 	});
 }, null, true, 'Asia/Shanghai');
 

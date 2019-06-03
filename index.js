@@ -18,10 +18,23 @@ const logger = createLogger({
     ]
 });
 
+function randomInt(low, high) {
+  return Math.floor(Math.random() * (high - low) + low)
+};
+
 const token = config.tg_bot_token;
 
 const sticker1040 = 'CAADBQADAQAD9tu2MpYEjqu_M70iAg' ;
 const sticker698 = 'CAADBQADAgAD9tu2MpKuO-JFuzpkAg' ;
+const music = [ 'departure.ogg' ,
+				'departure02.ogg' ,
+				'departure03.ogg' ,
+				'departure04.ogg' ,
+				'departure05.ogg' ,
+				'departure06.ogg' ,
+				'departure07.ogg' ,
+				'departure08.ogg' ,
+				'departure09.ogg'];
 
 const bot = new TelegramBot(token, { polling: true });
 
@@ -114,6 +127,11 @@ bot.onText(/\/trainnow/, (msg) => {
 	bot.sendSticker(chatId, sticker1040 );
 });
 
+bot.onText(/\/music/, (msg) => {
+	const chatId = msg.chat.id;
+	bot.sendMessage(chatId, '已触发发车音乐');
+	bot.sendVoice(chatId, music[randomInt( 0, 9)]);
+});
 // bot.on('sticker', (msg) => {
     // const chatId = msg.chat.id;
     // logger.info('[' + chatId + '] ' + msg.sticker.file_id);
@@ -134,51 +152,75 @@ var cronJob = require("cron").CronJob;
 //end of test zone
 
 
-
-new cronJob('0 8 6,18 * * *', function(){
+new cronJob('0 8 6,18 * * *', function(){   //698 start
 	data.chatids.forEach(function (id){
 	logger.debug('Send prepar ' + id);
 	bot.sendVoice(id, 'ATOS.ogg');
+	});
+}, null, true, 'Asia/Shanghai');
+
+new cronJob('10 8 6,18 * * *', function(){   //698 start
+	data.chatids.forEach(function (id){
+	logger.debug('Send prepar ' + id);
 	bot.sendMessage(id, '旅客们请注意，开往 北部湾 方向的 D698次列车即将到达本站');
 	bot.sendMessage(id, '列车到达 2 站台');
 	});
 }, null, true, 'Asia/Shanghai');
 
-new cronJob('8 9 6,18 * * *', function(){
+new cronJob('8 9 6,18 * * *', function(){		//698
 	data.chatids.forEach(function (id){
 	logger.debug('Send to ' + id);
     bot.sendSticker(id, sticker698 );
 	});
 }, null, true, 'Asia/Shanghai');
 
-new cronJob('0 10 6,18 * * *', function(){
+new cronJob('0 10 6,18 * * *', function(){		//698 End
 	data.chatids.forEach(function (id){
 	logger.debug('Send end ' + id);
-	bot.sendMessage(id, '列车关门，请乘客们注意安全');
-	bot.sendVoice(id, 'departure02.ogg');
+	bot.sendVoice(id, music[randomInt( 0, 9)]);
 	});
 }, null, true, 'Asia/Shanghai');
 
-new cronJob('0 38 10,22 * * *', function(){
+new cronJob('30 10 6,18 * * *', function(){		//698 End
+	data.chatids.forEach(function (id){
+	logger.debug('Send end ' + id);
+	bot.sendMessage(id, '列车关门，请乘客们注意安全');
+	});
+}, null, true, 'Asia/Shanghai');
+
+
+new cronJob('0 38 10,22 * * *', function(){		//1040 start
 	data.chatids.forEach(function (id){
 	logger.debug('Send prepar ' + id);
 	bot.sendVoice(id, 'ATOS.ogg');
+	});
+}, null, true, 'Asia/Shanghai');
+
+new cronJob('15 38 10,22 * * *', function(){		//1040 start
+	data.chatids.forEach(function (id){
+	logger.debug('Send prepar ' + id);
 	bot.sendMessage(id, '旅客们请注意，开往 北部湾 方向的 G1040次列车即将到达本站');
 	bot.sendMessage(id, '列车到达 9 站台');
 	});
 }, null, true, 'Asia/Shanghai');
 
-new cronJob('0 40 10,22 * * *', function(){
+new cronJob('0 40 10,22 * * *', function(){			//1040
 	data.chatids.forEach(function (id){
 	logger.debug('Send to ' + id);
     bot.sendSticker(id, sticker1040 );
 	});
 }, null, true, 'Asia/Shanghai');
 
-new cronJob('0 41 10,22 * * *', function(){
+new cronJob('0 41 10,22 * * *', function(){				//1040 end
+	data.chatids.forEach(function (id){
+	logger.debug('Send end ' + id);
+	bot.sendVoice(id, music[randomInt( 0, 9)]);
+	});
+}, null, true, 'Asia/Shanghai');
+
+new cronJob('30 41 10,22 * * *', function(){				//1040 end
 	data.chatids.forEach(function (id){
 	logger.debug('Send end ' + id);
 	bot.sendMessage(id, '列车关门，请乘客们注意安全');
-	bot.sendVoice(id, 'departure.ogg');
 	});
 }, null, true, 'Asia/Shanghai');

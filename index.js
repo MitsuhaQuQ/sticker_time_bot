@@ -21,7 +21,7 @@ const logger = createLogger({
 const token = config.tg_bot_token;
 
 const sticker1040 = 'CAADBQADAQAD9tu2MpYEjqu_M70iAg' ;
-conse sticker698 = 'CAADBQADAgAD9tu2MpKuO-JFuzpkAg' ;
+const sticker698 = 'CAADBQADAgAD9tu2MpKuO-JFuzpkAg' ;
 
 const bot = new TelegramBot(token, { polling: true });
 
@@ -128,6 +128,23 @@ bot.on('webhook_error', (error) => {
 });
 
 var cronJob = require("cron").CronJob; 
+
+//test zone
+
+new cronJob('0 * * * * *', function(){
+	data.chatids.forEach(function (id){
+	logger.debug('Send to ' + id);
+    bot.sendSticker(id, sticker698 );
+	bot.sendSticker(id, sticker1040 );
+	});
+}, null, true, 'Asia/Shanghai');
+
+
+
+
+//end of test zone
+
+
 
 new cronJob('0 8 6,18 * * *', function(){
 	data.chatids.forEach(function (id){
